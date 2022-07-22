@@ -8,6 +8,7 @@ public class Player : KinematicBody
 
 	private float _mouseSensitivity = 0.3F;
 	private Camera _camera;
+	private float _cameraAngleV= 0.0F;
 	
 	private Vector3 _velocity = Vector3.Zero;
 	
@@ -22,7 +23,12 @@ public class Player : KinematicBody
 		if (inputEvent is InputEventMouseMotion mouseMotionEvent)
 		{
 			this.RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
-			_camera.RotateX(Mathf.Deg2Rad(-mouseMotionEvent.Relative.y * _mouseSensitivity));
+			
+			var change = -mouseMotionEvent.Relative.y * _mouseSensitivity;
+			if (_cameraAngleV + change > -90 && _cameraAngleV + change < 90) {
+				_camera.RotateX(Mathf.Deg2Rad(change));
+				_cameraAngleV += change;
+			}
 		}
 	}
 	
