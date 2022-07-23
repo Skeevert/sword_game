@@ -8,7 +8,6 @@ public class Player : KinematicBody
 
 	private float _mouseSensitivity = 0.3F;
 	private Camera _camera;
-	private float _cameraAngleV= 0.0F;
 	
 	private Vector3 _velocity = Vector3.Zero;
 	
@@ -22,12 +21,12 @@ public class Player : KinematicBody
 	{
 		if (inputEvent is InputEventMouseMotion mouseMotionEvent)
 		{
-			this.RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
+			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
 			
-			var change = -mouseMotionEvent.Relative.y * _mouseSensitivity;
-			if (_cameraAngleV + change > -90 && _cameraAngleV + change < 90) {
-				_camera.RotateX(Mathf.Deg2Rad(change));
-				_cameraAngleV += change;
+			var change = Mathf.Deg2Rad(-mouseMotionEvent.Relative.y * _mouseSensitivity);
+			var futureCameraAngleV = _camera.Rotation.x + change;
+			if (futureCameraAngleV > -Mathf.Pi / 2 && futureCameraAngleV < Mathf.Pi / 2) {
+				_camera.RotateX(change);
 			}
 		}
 	}
@@ -36,23 +35,38 @@ public class Player : KinematicBody
 	{
 		var direction = Vector3.Zero;
 		
+		Vector3 rightAxis = GlobalTransform.basis.x;
+		Vector3 forwardAxis = GlobalTransform.basis.z;
 		
 		// TODO: Implement camera and then get its angle
 		if (Input.IsActionPressed("move_forward"))
 		{
-			
+			direction -= forwardAxis;
 		}
 		if (Input.IsActionPressed("move_backward"))
 		{
-			
+			direction += forwardAxis;
 		}
 		if (Input.IsActionPressed("move_right"))
 		{
-			
+			direction += rightAxis;
 		}
 		if (Input.IsActionPressed("move_left"))
 		{
-			
+			direction -= rightAxis;
 		}
+		
+		if (direction != Vector3.Zero)
+		{
+			direction = direction.Normalized();
+		}
+		
+		_velocity.x = direction.x * Speed;
+		_velocity.z = direction.z * Speed;
+		
+		// TODO: Implement jumps
+		_velocity.y = 0;
+		
+		_velocity = MoveAndSlide(_velocity, Vector3.Up);
 	}
 }
