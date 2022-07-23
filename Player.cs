@@ -24,10 +24,12 @@ public class Player : KinematicBody
 			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
 			
 			var change = Mathf.Deg2Rad(-mouseMotionEvent.Relative.y * _mouseSensitivity);
-			var futureCameraAngleV = _camera.Rotation.x + change;
-			if (futureCameraAngleV > -Mathf.Pi / 2 && futureCameraAngleV < Mathf.Pi / 2) {
-				_camera.RotateX(change);
-			}
+
+			change = Mathf.Clamp(change, 
+				-Mathf.Pi / 2 - _camera.Rotation.x, 
+				Mathf.Pi / 2 - _camera.Rotation.x
+			);
+			_camera.RotateX(change);
 		}
 	}
 	
