@@ -21,14 +21,19 @@ public class Player : KinematicBody
 	{
 		if (inputEvent is InputEventMouseMotion mouseMotionEvent)
 		{
-			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
+//			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
 			
 			var change = Mathf.Deg2Rad(-mouseMotionEvent.Relative.y * _mouseSensitivity);
+			var futureCameraAngleV = change + _camera.Rotation.x;
 
-			change = Mathf.Clamp(change, 
-				-Mathf.Pi / 2 - _camera.Rotation.x, 
-				Mathf.Pi / 2 - _camera.Rotation.x
-			);
+			// We should correct change in order not to overshoot [-90, 90] degrees.
+			// If everything is in limits, the expression simplifies to change = change.
+			// If not, change is corrected by the delta between overshot value and limits
+			change = change - (futureCameraAngleV - Mathf.Clamp(futureCameraAngleV, 
+				-Mathf.Pi / 2, 
+				Mathf.Pi / 2
+			));
+			
 			_camera.RotateX(change);
 		}
 	}
