@@ -21,7 +21,7 @@ public class Player : KinematicBody
 	{
 		if (inputEvent is InputEventMouseMotion mouseMotionEvent)
 		{
-//			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
+			RotateY(Mathf.Deg2Rad(-mouseMotionEvent.Relative.x * _mouseSensitivity));
 			
 			var change = Mathf.Deg2Rad(-mouseMotionEvent.Relative.y * _mouseSensitivity);
 			var futureCameraAngleV = change + _camera.Rotation.x;
