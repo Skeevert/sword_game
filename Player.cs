@@ -3,11 +3,15 @@ using System;
 
 public class Player : KinematicBody
 {
-	public int Speed = 14;
+	public float MaxSpeed = 20F;
+	public float Acceleration = 200F;
 	public int FallAcceleration = 75;
 
 	private float _mouseSensitivity = 0.3F;
 	private Camera _camera;
+	
+	// TODO: Move to separate Physics class
+	private float _friction = 6F;
 	
 	private Vector3 _velocity = Vector3.Zero;
 	
@@ -45,6 +49,8 @@ public class Player : KinematicBody
 		Vector3 rightAxis = GlobalTransform.basis.x;
 		Vector3 forwardAxis = GlobalTransform.basis.z;
 		
+		applyFriction(delta);
+		
 		// TODO: Implement camera and then get its angle
 		if (Input.IsActionPressed("move_forward"))
 		{
@@ -65,15 +71,39 @@ public class Player : KinematicBody
 		
 		if (direction != Vector3.Zero)
 		{
-			direction = direction.Normalized();
+			direction = direction.Normalized() * Acceleration * delta;
 		}
 		
-		_velocity.x = direction.x * Speed;
-		_velocity.z = direction.z * Speed;
+		_velocity.x = _velocity.x + direction.x;
+		_velocity.z = _velocity.z + direction.z;
 		
+		limitVelocity();
+	
 		// TODO: Implement jumps
 		_velocity.y = 0;
 		
 		_velocity = MoveAndSlide(_velocity, Vector3.Up);
+	}
+	
+	private void applyFriction(float delta)
+	{
+		float speed = _velocity.Length();
+		
+		if (speed < 1)
+		{
+			_velocity.x = 0;
+			_velocity.z = 0;
+			return;
+		}
+		
+		float multiplier = 1 - _friction * delta;
+		_velocity.x *= multiplier;
+		_velocity.z *= multiplier;
+	}
+	
+	// Vector3.LimitLength() was added in 3.5, and we are working with 3.4
+	private void limitVelocity()
+	{
+		_velocity = _velocity.Length() > MaxSpeed ? _velocity.Normalized() * MaxSpeed : _velocity;
 	}
 }
