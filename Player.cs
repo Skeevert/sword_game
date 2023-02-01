@@ -74,8 +74,8 @@ public class Player : KinematicBody
 			direction = direction.Normalized() * Acceleration * delta;
 		}
 		
-		_velocity.x = _velocity.x + direction.x;
-		_velocity.z = _velocity.z + direction.z;
+		_velocity.x += direction.x;
+		_velocity.z += direction.z;
 		
 		limitVelocity();
 	
