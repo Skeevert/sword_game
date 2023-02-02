@@ -49,6 +49,7 @@ public class Player : KinematicBody
 		Vector3 rightAxis = GlobalTransform.basis.x;
 		Vector3 forwardAxis = GlobalTransform.basis.z;
 		
+
 		applyFriction(delta);
 		
 		// TODO: Implement camera and then get its angle
@@ -71,11 +72,13 @@ public class Player : KinematicBody
 		
 		if (direction != Vector3.Zero)
 		{
-			direction = direction.Normalized() * Acceleration * delta;
+			direction = direction.Normalized();
 		}
 		
-		_velocity.x += direction.x;
-		_velocity.z += direction.z;
+		var addVelocity = direction * Acceleration *delta;
+		
+		_velocity.x += addVelocity.x;
+		_velocity.z += addVelocity.z;
 		
 		limitVelocity();
 	
