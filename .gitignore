@@ -9,3 +9,9 @@ export_presets.cfg
 # Mono-specific ignores
 .mono/
 data_*/
+
+#godot4
+.godot/
+
+#vs
+.vs/
