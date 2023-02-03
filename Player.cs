@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 public partial class Player : CharacterBody3D
 {
@@ -83,10 +82,10 @@ public partial class Player : CharacterBody3D
 		_velocity.X += addVelocity.X;
 		_velocity.Z += addVelocity.Z;
 
-		limitVelocity();
+		_velocity.LimitLength(MaxSpeed);
 
-		// TODO: Implement jumps
-		_velocity.Y = 0;
+        // TODO: Implement jumps
+        _velocity.Y = 0;
 
 		Velocity = _velocity;
 		MoveAndSlide(); //since 4.0 MoveAndSlide now works with object properties (e.g. Velocity)
@@ -106,12 +105,5 @@ public partial class Player : CharacterBody3D
 		float multiplier = 1 - _friction * delta;
 		_velocity.X *= multiplier;
 		_velocity.Z *= multiplier;
-	}
-
-	// Vector3.LimitLength() was added in 3.5, and we are working with 3.4
-	// Ok now we work with 4.0, consider changing
-	private void limitVelocity()
-	{
-		_velocity = _velocity.Length() > MaxSpeed ? _velocity.Normalized() * MaxSpeed : _velocity;
 	}
 }
