@@ -18,7 +18,7 @@ public class Player : KinematicBody
 	public override void _Ready()
 	{
 		_camera = GetNode<Camera>("Camera");
-		Input.SetMouseMode(Input.MouseMode.Captured);
+		Input.MouseMode = Input.MouseModeEnum.Captured;
 	}
 
 	public override void _Input(InputEvent inputEvent)
@@ -104,9 +104,8 @@ public class Player : KinematicBody
 		_velocity.z *= multiplier;
 	}
 	
-	// Vector3.LimitLength() was added in 3.5, and we are working with 3.4
 	private void limitVelocity()
 	{
-		_velocity = _velocity.Length() > MaxSpeed ? _velocity.Normalized() * MaxSpeed : _velocity;
+		_velocity = _velocity.LimitLength(MaxSpeed);
 	}
 }
